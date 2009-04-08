@@ -1,0 +1,76 @@
+shoutcast-search CURVERSION
+========================
+shoutcast-search searches shoutcast.com for radio stations based on
+criteria given on the command line. The application can for example
+be used to automatically start a random radio station at startup or
+as an improved and handy search tool for radio stations.
+
+See http://code.k2h.se for more info.
+
+
+Example
+-------
+The following starts my day: launch vlc with a random station playing
+Chill with reasonable technical (128+ kbps) and musical (some
+listeners) quality.
+
+    $ shoutcast-search -n 1 -g chill -l ">50" -b ">127" -r | xargs vlc 
+
+    
+Requirements
+------------
+* python 2.4+ (not python 3.0+)
+
+
+Installation
+------------
+python 2.4 or higher is required to run the application. You can simply
+copy the program to any directory and invoke it by
+
+    $ python shoutcast-search
+
+On *nix, you can install it using make. Edit config.mk to configure make.
+Next, as root:
+
+    # make install
+
+    
+Running shoutcast-search
+------------------------
+Using the python interpreter manually:
+
+    $ python shoutcast-search
+
+or after installation on *nix:
+
+    $ shoutcast-search
+
+For more information on usage see the man page shoutcast-search(1) or:
+
+    $ [python ] shoutcast-search --help
+
+    
+Changes
+-------
+0.1 (2009-04-08):
+     First release. Packaged as application, even though the source code
+     is fairly prepared to be used as a python module.
+
+     
+License
+-------
+    Copyright (c) 2009 by Henrik Hallberg (halhen at k2h dot se)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.

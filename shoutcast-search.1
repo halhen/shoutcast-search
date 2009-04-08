@@ -1,0 +1,134 @@
+.TH SHOUTCAST-SEARCH 1 shoutcast-search-CURVERSION
+.SH NAME
+shoutcast-search \- search shoutcast.com radio stations
+.SH SYNOPSIS
+.B shoutcast-search
+[OPTION]... [CRITERIUM]... [FILTER]... [KEYWORD]...
+.SH DESCRIPTION
+.B shoutcast-search
+searches the shoutcast.com radio stations. CRITERIA are used to search for station names, genres or currently played songs. FILTERS can be used to limit searches, for example by number of current listeners. Finally, KEYWORDS are used to search freely among station names, genres and current songs. All parameters must match for stations to be listed. When no CRITERIA or KEYWORDS are supplied, shoutcast-search returns the current "Top 500" stations.
+
+.B shoutcast-search
+uses an API provided by shoutcast.com that may only be used for non-commercial purposes. See the URL in SEE ALSO for API documentation and rules.
+.SH OPTIONS
+.TP
+.B --version
+Show program's version number and exit.
+.TP
+.B -h, --help
+Show program's help message and exit.
+.TP
+.B -n LIMIT, --limit=LIMIT
+Set maximum number of stations to be listed.
+.TP
+.B -r, --random
+Sort stations randomly instead of by number of listeners
+.TP
+.B -v, --verbose
+Verbose output, useful for getting search right.
+.SH CRITERIA
+Used to create detailed searches, for example to search for stations with specific names or artists being played. You can supply multiple CRITERIA of the same type, for example
+
+    $ shoutcast-search -g Rock -g Pop
+
+to find stations with both "Rock" and "Pop" in the genre. This is different from
+
+    $ shoutcast-search -g "Rock Pop"
+
+where the program searches for the exact string "Rock Pop".
+.TP
+.B -g GENRE, --genre=GENRE
+Search for stations with the word/phrase GENRE in their listed genre.
+.TP
+.B -p SONG, --playing=SONG
+Search for stations with the word/phrase SONG in their currently played track. Note: this parameter is not very precise due to caching in the shoutcast.com web service.
+.TP
+.B -s STATION, --station=STATION
+Search for stations with the word/phrase STATION in their name.
+.SH FILTERS
+Filter the search results. These can NOT be used alone, for example search you can't search for all stations with no listeners. If no CRITERIA or KEYWORDS are given, the "Top 500" stations are used.
+
+The --bitrate and --listeners parameters take mathematical expressions in the form [=><]N where N is a positive integer. ">128" means more than 128, "=128" means exactly 128 and "<128" means less than 128. "=" is assumed if no operator is given, i.e. "128" is identical to "=128". Note: you probably need to enclose the expression in quotes, depending on your shell.
+.TP
+.B -b BITRATE, --bitrate=BITRATE
+Filter stations matching with the bitrate in kbps matching the BITRATE expression (see above for format).
+.TP
+.B -l LISTENERS, --listeners=LISTENERS
+Filter stations with the number of current listeners matching the LISTENERS expression (see above for format).
+.TP
+.B -t CODEC, --type=CODEC
+Filter stations based on the codec required. Available options are "mpeg" for MP3 or "aacp" for aacPlus.
+.SH KEYWORDS
+In addition to CRITERIA, you can provide KEYWORDS when you don't care where a word or phrase appear. KEYWORDS are matched against station names, genres and current songs. Separate KEYWORDS with spaces, enclose multiple word KEYWORDS in quotes, for example:
+
+    $ shoutcast-search "Depeche Mode" somebody
+.SH EXAMPLES
+Normal output is one URL per line pointing to a matching shoutcast stream. This can be used to start music players with the applicable stations or to create playlists. For example, start mplayer with the most popular stream currently playing a Depeche Mode song:
+
+  $ shoutcast-search -n 1 -s "Depeche Mode" | xargs mplayer
+
+.B shoutcast-search
+can also be used in --verbose mode. This is useful to verify that you have provided the parameters correctly. Verbose mode also prints more information for each station, needed for manual searches. For example, searching for two random stations playing ambient music:
+
+   $ shoutcast-search --verbose --limit=2 --random --genre=ambient
+
+prints
+
+   Search summary
+   ------------------------------
+    Keywords: 
+      Genres: ambient
+     Playing: 
+    Stations: 
+     Bitrate: 
+   Listeners: 
+        Type: 
+       Limit: 2
+       Order: random
+
+   Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
+           http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
+           Ambient, 139 listeners
+           Now playing: HIA and Biosphere - Midpoint
+
+   X-Pulse 24/7 Ambient Radio [48kbps audio/mpeg]
+           http://yp.shoutcast.com/sbin/tunein-station.pls?id=255046
+           Ambient, 0 listeners
+           Now playing: Zero One - Affirmative
+
+   2 station(s) found.
+
+The information for each station is listed below. Copy/paste or type the URL into your shoutcast-enabled music player to play the stream.
+
+   <station name> [<bitrate> <MIME type>]
+           <URL>
+           <genre>, <nr> listeners
+           Now playing: <current track>
+.SH EXIT STATUS
+.TP
+.B 0
+Successful
+.TP
+.B 1
+Network error
+.TP
+.B 2
+Argument error
+.TP
+.B 3
+Other error
+.SH AUTHOR
+Written by Henrik Hallberg (halhen@k2h.se)
+.SH REPORTING BUGS
+Please report bugs to halhen@k2h.se
+.SH SEE ALSO
+http://forums.winamp.com/showthread.php?threadid=295638
+http://www.shoutcast.com
+.SH LICENSE
+Copyright (c) 2009 by Henrik Hallberg (halhen@k2h.se)
+
+This program is free software; you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation; either version 2 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program; if not, write to the Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
