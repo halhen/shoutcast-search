@@ -14,6 +14,7 @@ cat config.mk | sed s/CURVERSION/$1/g > $RELEASENAME/config.mk
 cat Makefile | sed s/CURVERSION/$1/g > $RELEASENAME/Makefile
 cat shoutcast-search | sed s/CURVERSION/$1/g > $RELEASENAME/shoutcast-search
 cat shoutcast-search.1 | sed s/CURVERSION/$1/g > $RELEASENAME/shoutcast-search.1
+cat documentation.md | sed s/CURVERSION/$1/g > $RELEASENAME/documentation.md
 
 tar cvzf releases/${RELEASENAME}.tar.gz $RELEASENAME
 

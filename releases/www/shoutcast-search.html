@@ -1,0 +1,180 @@
+<html>
+<head>
+<title>shoutcast-search</title>
+<link href="styles.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<div id="content">
+<h1>shoutcast-search</h1>
+<p>
+shoutcast-search searches the <a href="http://www.shoutcast.com">shoutcast.com</a> radio stations from your command line. It is developed and tested on Linux, but since it is written in Python it may run, or at least should be easily portable, to other operating systems.</p>
+<ul>
+<li><a href="http://www.k2h.se/code/shoutcast-search.man.txt">man page</a></li>
+<li><a href="http://www.k2h.se/code/dl/shoutcast-search-latest.tar.gz">latest release</a></li>
+<li><a href="http://github.com/halhen/shoutcast-search/tree/master">source repository</a></li>
+</ul>
+<p>
+Distribution specific links:</p>
+<ul>
+<li><a href="http://aur.archlinux.org/packages.php?ID=25366">archlinux AUR package</a></li>
+</ul>
+<h2>Why shoutcast-search?  </h2>
+<ul>
+<li>More powerful searches than at shoutcast.com.</li>
+<li>Handy - only a terminal window away.</li>
+<li>Automation.</li>
+</ul>
+<h2>Automatic station selection</h2>
+<p>
+In default mode, shoutcast-search prints the URLs of the matching radio station, with one URL per line. These lines can be fed to a media player which will start playing the selected tracks. To play a random Top 500 station in VLC for example:</p>
+<pre><code>$ shoutcast-search -n 1 -r | xargs vlc &amp;</code></pre>
+<h2>Manual station selection</h2>
+<p>
+shoutcast-search can also be run in verbose mode: <code>shoutcast-search -v</code>. This is useful in two ways.</p>
+<ul>
+<li><p>
+To adjust the search<br />  
+Getting the search can be a little tricky. shoutcast-search prints debug information about the search to help you get it right.</p>
+</li>
+<li><p>
+To manually choose between the stations.<br />  
+In verbose mode, the stations are listed with more information. This allows you to browse the hits and manually copy the URL for whatever station you want to listen to.</p>
+</li>
+</ul>
+<p>
+An example of verbose output:</p>
+<pre><code> $ shoutcast-search --verbose --sort=rn2l --genre=ambient
+ Search summary
+ ------------------------------
+ Keywords:
+   Genres: ambient
+  Playing:
+ Stations:
+  Bitrate:
+Listeners:
+     Type:
+    Order: by sorters
+   Sorter: random order | top 2 | listeners desc
+    Limit: 2
+  	      
+Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
+        http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
+        Ambient, 139 listeners
+        Now playing: HIA and Biosphere - Midpoint
+  
+X-Pulse 24/7 Ambient Radio [48kbps audio/mpeg]
+        http://yp.shoutcast.com/sbin/tunein-station.pls?id=255046
+        Ambient, 0 listeners
+        Now playing: Zero One - Affirmative
+
+2 station(s) found.</code></pre>
+<p>
+The information for each station is listed below. Copy/paste or type the URL into your shoutcast-enabled music player to play the stream.</p>
+<pre><code>       &lt;station name&gt; [&lt;bitrate&gt; &lt;MIME type&gt;]
+               &lt;URL&gt;
+               &lt;genre&gt;, &lt;nr&gt; listeners
+               Now playing: &lt;current track&gt;</code></pre>
+<h2>Search criteria</h2>
+<p>
+You can perform free-text searches on three pieces of information</p>
+<ul>
+<li>Genre (<code>-g</code>)</li>
+<li>Song (<code>-p</code>)</li>
+<li>Station (<code>-s</code>)</li>
+</ul>
+<p>
+The stations publish this information and they usually match pretty well. You can search for several criteria at once. All criteria must match for a station to be listed. For example searching <code>shoutcast-search -g synth -g pop -p &quot;depeche mode&quot;</code> lists all stations that have both the words &quot;rock&quot; <em>and</em> &quot;pop&quot; in their genre <em>and</em> is currently playing &quot;depeche mode&quot;.</p>
+<p>
+If you are searching for multi-word phrases, they can be enclosed in quotes. Searching for <code>&quot;depeche mode&quot;</code> requires the full string, including the single space, to be present. <code>depeche mode</code> requires depeche <em>and</em> mode to appear, the order does however not matter. Criteria are case-insensive, <code>&quot;Depeche MODE&quot;</code> and <code>&quot;depeche mode&quot;</code> give the same results.</p>
+<p>
+You can also search for words or phrases without specifying which element to search. <code>shoutcast-search metallica</code> searches for stations with the word <code>metallica</code> in their genre, current song <em>or</em> station name. Any phrase that is not specified with an option, e.g. <code>-p</code>, will be used as a free text search. <code>shoutcast-search -g rock metallica</code> finds all stations with rock as their genre and metallica in any of genre, current song or station name. Use verbose mode to get your search right if you need to..</p>
+<p>
+If you don't provide any criteria, shoutcast-search returns the current Top 500 stations.</p>
+<p>
+<em>Note: due to caching at shoutcast.com, the currently played song per station is a bit delayed an not always correct.</em></p>
+<h2>Filters</h2>
+<p>
+soutcast-search can filter stations based on quality, number of listeners and codec required.</p>
+<p>
+The bitrate and number of listeners filters require an expression to compare with. The form is <code>[=&gt;&lt;]N</code> where <code>N</code> is a positive integer. <code>&quot;&gt;128&quot;</code> means more than 128, <code>&quot;=128&quot;</code> means exactly 128 and <code>&quot;&lt;128&quot;</code> means less than 128. &quot;Equals&quot; is assumed if no operator is given, i.e. <code>&quot;128&quot;</code> is identical to <code>&quot;=128&quot;</code>.</p>
+<p>
+<em>Note: you probably need to enclose the operation in quotes, depending on your shell.</em></p>
+<p>
+<code>-b</code> filter stations based on their bitrate in kbps. <code>-b &quot;&gt;127&quot;</code> returns stations with 128 kbps or more bitrate.</p>
+<p>
+<code>-l</code> filter stations based on how many listeners they currently have. More listeners usually mean better musical quality, even though it varies depending on genre. <code>-l &quot;&gt;100&quot;</code> returns stations with more than a hundred listeners.</p>
+<p>
+Filter stations based on which codec is required for playback. Valid options are <code>-t mpeg</code> for MP3 or <code>-t aacp</code> for aacPlus. By default, both codecs are included.</p>
+<h2>Sorting</h2>
+<p>
+If you want more control over how the list is sorted, you can use the <code>--sort</code> option. You specify how you want the list sorted by entering letters and control characters in the proper order. Specifying sorters void the <code>-r</code> option.</p>
+<p>
+Sorting  is  performed  in written order, for example <code>ln20r</code> sorts the retrieved list by number of listeners, trunkates it to twenty  stations and  then randomizes it, giving the top twenty stations randomly sorted. <code>^</code> is used to set sort order to ascending for <code>l</code> and <code>b</code>. The default  sort order is reset to descending for each new sorter.</p>
+<p>
+The available sorting parameters are:</p>
+<ul>
+<li><code>^</code> reverses order for the next variable. Sort order is reset to descending for each variable.</li>
+<li><code>b</code> sorts by bitrate.</li>
+<li><code>l</code> sorts by number of listeners.</li>
+<li><code>r</code> randomizes list.</li>
+<li><code>n</code> truncates the list with the number of elements that is given, for example <code>n10</code>.</li>
+</ul>
+<h2>Options</h2>
+<p>
+By default, shoutcast-search returns the found stations ordered by number of listeners. You can tell shoutcast-search to randomize the order by providing the <code>-r</code> option. This option is not applicable if <code>--sort</code> is specified.</p>
+<p>
+You can tell also set a maximum number of stations to be listed by using the <code>-n</code> option. <code>-n 5</code> returns maximum five stations. Often, it is good to specify <code>-n 1</code> when piping the output to an audio player.</p>
+<h2>Order of evaluation</h2>
+<p>
+shoutcast-search first matches the stations against the criteria; all criteria must match. Next, the results are filtered, again all parameters must match for a station to be listed. The remaining stations are sorted, or randomized based on options, and finally the number of results are limited, if applicable.</p>
+<h2>Examples</h2>
+<ul>
+<li>Find the most listened to station:</li>
+</ul>
+<pre><code>$ shoutcast-search -n 1</code></pre>
+<ul>
+<li>Find a random station with decent musical and technical quality playing chill:</li>
+</ul>
+<pre><code>$ shoutcast-search -n 1 -r -l &quot;&gt;50&quot; -b &quot;&gt;127&quot; -g chill
+</code></pre>
+<ul>
+<li>Get the five most listened to rock radio stations sorted by bitrate:</li>
+</ul>
+<pre><code>$ shoutcast-search -g rock --sort=ln5b</code></pre>
+<h2>Automation</h2>
+<p>
+I've have a function in my .bashrc to quickly search and start a station with <a href="http://en.wikipedia.org/wiki/Mpg123">mpg123</a>:
+<pre><code>
+radio() {
+	killall mpg123; shoutcast-search -n 1 -t mpeg -b &quot;&gt;63&quot; --sort=ln10r $* | xargs mpg123 -q -@ &amp;
+}</code></pre>
+</p>
+<p>
+This function selects one random station out of the top ten most listened to playing mpeg at 64+ kbps. It also takes arguments to set new options, or change the ones set in the script, from the command line like below.</p>
+<pre><code>$ radio chill</code></pre>
+<p>
+Something similar can easily be put in a shell script and connected to a media button on the keyboard.</p>
+<h2>Media players</h2>
+<p>
+Check your audio players documentation on how to play shoutcast streams. Here follow a few examples.</p>
+<ul>
+<li>VLC</li>
+</ul>
+<pre><code>$ shoutcast-search [...] | xargs vlc --one-instance &amp;</code></pre>
+<ul>
+<li>MPlayer</li>
+</ul>
+<pre><code>$ killall mplayer; shoutcast-search [...] | xargs mplayer &amp;
+</code></pre>
+<ul>
+<li>mpg123</li>
+</ul>
+<pre><code>$ killall mpg123; shoutcast-search -t mpeg [...] | xargs mpg123 -q -@ &amp;</code></pre>
+<h2>More information</h2>
+<p>
+For a complete reference, see the <a href="http://www.k2h.se/code/shoutcast-search.man.txt">man-page</a> (<code>man shoutcast-search</code>).</p>
+<p>
+Written by Henrik Hallberg (<a href="&#x6D;&#x61;i&#x6C;&#x74;&#x6F;:&#104;&#97;&#108;&#104;&#101;&#110;&#64;&#107;&#50;&#104;&#46;&#115;&#101;">&#104;&#97;&#108;&#104;&#101;&#110;&#64;&#107;&#50;&#104;&#46;&#115;&#101;</a>). Please send me an e-mail if you find bugs, have ideas for new features or just to let me know you use the application. I'd be happy to hear from you.</p>
+</div>
+</body>
+</html>

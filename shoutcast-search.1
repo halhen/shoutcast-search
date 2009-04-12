@@ -46,9 +46,9 @@ Search for stations with the word/phrase SONG in their currently played track. N
 .B -s STATION, --station=STATION
 Search for stations with the word/phrase STATION in their name.
 .SH FILTERS
-Filter the search results. These can NOT be used alone, for example search you can't search for all stations with no listeners. If no CRITERIA or KEYWORDS are given, the "Top 500" stations are used.
+Filter the search results. These can NOT be used alone, you can't for example search for all stations with no listeners. If no CRITERIA or KEYWORDS are given, the "Top 500" stations are used.
 
-The --bitrate and --listeners parameters take mathematical expressions in the form [=><]N where N is a positive integer. ">128" means more than 128, "=128" means exactly 128 and "<128" means less than 128. "=" is assumed if no operator is given, i.e. "128" is identical to "=128". Note: you probably need to enclose the expression in quotes, depending on your shell.
+The --bitrate and --listeners options take mathematical expressions in the form [=><]N where N is a positive integer. ">128" means more than 128, "=128" means exactly 128 and "<128" means less than 128. "=" is assumed if no operator is given, i.e. "128" is identical to "=128". Note: you probably need to enclose the expression in quotes, depending on your shell.
 .TP
 .B -b BITRATE, --bitrate=BITRATE
 Filter stations matching with the bitrate in kbps matching the BITRATE expression (see above for format).
@@ -66,9 +66,6 @@ In addition to CRITERIA, you can provide KEYWORDS when you don't care where a wo
 Sorting and pruning of the list is performed by specifying the --sort option. Specifying sorters void the "-r" option.
 
 Sorting is performed in written order, for example "ln20r" sorts the retrieved list by number of listeners, trunkates it to twenty stations and then randomizes it, giving the top twenty random stations matching the search.
-
-^ is used to set sort order to ascending for l and b. The default sort order is reset to descending for each new sorter. 
-
 .TP
 ^ reverses order for the next variable. Sort order is reset to descending for each variable
 .TP
@@ -84,15 +81,15 @@ Normal output is one URL per line pointing to a matching shoutcast stream. This 
 
   $ shoutcast-search -n 1 -s "Depeche Mode" | xargs mplayer
 
-Examples of SORTERS are
+Examples of SORTERS:
 .TP
-"^b" sorts by bitrate ascending.
+"^b": sort by bitrate ascending.
 .TP
 "ln10r": sort by bitrate descending, truncate the list to ten stations, randomize order. This is appropriate if you want to pick a random popular station.
 .SH VERBOSE MODE
 shoutcast-search can also be used in --verbose mode. This is useful to verify that you have provided the parameters correctly. Verbose mode also prints more information for each station, needed for manual searches. For example, searching for two random stations playing ambient music:
 
-   $ shoutcast-search -v --limit=2 --random --genre=ambient
+   $ shoutcast-search --verbose --sort=rn2l --genre=ambient
 
 prints
 
@@ -105,10 +102,9 @@ prints
      Bitrate: 
    Listeners: 
         Type: 
-       Order: random
-      Manips:
+       Order: by sorters
+      Sorter: random order | top 2 | listeners desc
        Limit: 2
-
 
    Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
            http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
@@ -151,6 +147,7 @@ Please report bugs to halhen@k2h.se
 .SH SEE ALSO
 http://forums.winamp.com/showthread.php?threadid=295638
 http://www.shoutcast.com
+http://code.k2h.se
 .SH LICENSE
 Copyright (c) 2009 by Henrik Hallberg (halhen@k2h.se)
 

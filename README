@@ -52,6 +52,13 @@ For more information on usage see the man page shoutcast-search(1) or:
     
 Changes
 -------
+0.2 (2009-04-12):
+     --sorted option.
+     exit code 4 when no stations found
+     documentation.md (in markdown format)
+     minor corrections in e.g. man page
+     
+
 0.1 (2009-04-08):
      First release. Packaged as application, even though the source code
      is fairly prepared to be used as a python module.

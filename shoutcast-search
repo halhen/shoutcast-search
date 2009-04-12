@@ -348,7 +348,7 @@ if __name__ == '__main__':
         if p_sort_rules:
             order_str = 'by sorters'
         print '    Order: %s' % order_str
-        print '   Manips: %s' % (' | '.join(sorters_description))
+        print '   Sorter: %s' % (' | '.join(sorters_description))
         limit_str = ''
         if p_limit > 0:
             limit_str = str(p_limit)
