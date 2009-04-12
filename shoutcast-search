@@ -74,7 +74,7 @@ def url_by_id(index):
     '''
     return 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=%s' % index
 
-def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda(x): True, listeners_fn = lambda(x): True, mime_type = '', limit = 0, randomize = False):
+def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda(x): True, listeners_fn = lambda(x): True, mime_type = '', limit = 0, randomize = False, sorters = []):
     '''
     Search shoutcast.com for streams with given criteria. See http://forums.winamp.com/showthread.php?threadid=295638 for details and rules. Raises urllib2.URLError if network communication fails.
       search - List of free-form keywords. Searches in station names, genres and songs.
@@ -86,6 +86,7 @@ def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda
       mime_type - filter stations by MIME type
       limit - maximum number of stations returned. 0 means unlimited.
       randomize - should results be returned in random order? True / False
+      sorters - a list of functions accepting the station list and returning a modified one. Executed after randomization / sorting by number of listeners.
 
     Returns a list with one dict per station. Each dict contains:
       'name' - station name
@@ -144,6 +145,9 @@ def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda
         # Sort by listener count
         results.sort(lambda a, b: cmp(int(a['lc']), int(b['lc'])), reverse=True)
 
+    for m in sorters:
+        results = m(results)
+
     if limit > 0:
         results = results[:limit]
 
@@ -152,7 +156,7 @@ def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda
 if __name__ == '__main__':
     # Stuff that is not needed when used as a library are declared in here
 
-    description = 'Search shoutcast.com for radio stations (not for commercial use, see http://forums.winamp.com/showthread.php?threadid=295638). Use criteria to search for station names, genres or current songs, and filters to specify details. Keywords are used to search freely among station names, genres and current songs. With no criteria or keywords, %prog returns the current Top500 list. Stations are storted by number of listeners, unless the --random flag is enabled. Example: \'%prog -n 10 -g Rock -p "Depeche Mode" -b "=128"\' shows the top ten Rock 128kbps stations currently playing Depeche Mode.'
+    description = 'Search shoutcast.com for radio stations (not for commercial use, see http://forums.winamp.com/showthread.php?threadid=295638). Use criteria to search for station names, genres or current songs, and filters to specify details. Keywords are used to search freely among station names, genres and current songs. With no criteria or keywords, %prog returns the current Top500 list. Stations can be sorted in different ways using sorters. Example: \'%prog -n 10 -g Rock -p "Depeche Mode" -b "=128"\' shows the top ten Rock 128kbps stations currently playing Depeche Mode.'
     import optparse
     
     def _station_text(station_info, verbose = False):
@@ -192,6 +196,81 @@ if __name__ == '__main__':
             return int(value)
         except:
             o.error('invalid integer: %s' % value)
+
+    def _generate_list_sorters(pattern = 'l'):
+        '''
+        We want to manipulate the list by pruning and sorting. Pattern contains a string that defines how
+        The pattern is:
+        [^]([bnr]|l\d+):
+        ^ set ascending order for the next sorter. Sort order is reset to descending for each new sorter.
+        b sorts by bitrate.
+        l sorts by number of listeners.
+        r randomizes list.
+        n truncates the list with the number of stations given, e.g. n10 for ten stations.
+
+        Examples
+        ^b: sort by bitrate ascending
+        ln10r: sort by bitrate descending, truncate the list to ten stations, randomize order. This is appropriate if you want a random popular station, but have a hard time predicting the number of listeners.
+        
+        Behaviour with command line parameters '-n 10' is 'ln10' and with '-r -n 1' it is 'rn1'.
+        Default behaviour is 'l'
+        '''
+        def _create_sorter(field, descending):
+            return lambda list: sorted(list, lambda a, b: cmp(int(a[field]), int(b[field])), reverse = descending)
+
+        def _filter_description(fieldname, descending):
+            descending_text = 'desc'
+            if not descending:
+                descending_text = 'asc'
+            return '%s %s' % (fieldname, descending_text)
+            
+        def _random(list):
+            random.shuffle(list)
+            return list
+        
+        sorters = []
+        sorters_description = []
+        sort_descending = True
+
+        # I'd rather enumerate or something, but 'n' needs some special attention
+        # Not very pretty, though
+        index = 0
+        while index < len(pattern):
+            char = pattern[index]
+            if char == '^':
+                sort_descending = False
+            elif char == 'b':
+                sorters.append(_create_sorter('br', sort_descending))
+                sorters_description.append(_filter_description('bitrate', sort_descending))
+            elif char == 'l':
+                sorters.append(_create_sorter('lc', sort_descending))
+                sorters_description.append(_filter_description('listeners', sort_descending))
+            elif char == 'r':
+                sorters.append(_random)
+                sorters_description.append('random order')
+            elif char == 'n':
+                number = ''
+            
+                while True:
+                    index += 1
+                    if index >= len(pattern) or pattern[index] not in '0123456789':
+                        break
+                    number = number + pattern[index]
+                index -= 1
+                    
+                if not number:
+                    o.error('missing number for sorter n in "%s"' % pattern)
+                value = int(number)
+                sorters.append(lambda list: list[:value])
+                sorters_description.append('top %s' % value)
+            else:
+                o.error('invalid sorter: %s' % char)
+        
+            if char != '^':
+                sort_descending = True # Reset sort order
+            index += 1
+            
+        return (sorters, sorters_description)
         
     o = optparse.OptionParser(usage = "%prog [options] [keywords] - shoutcast search",
                               version="%prog CURVERSION",
@@ -199,7 +278,7 @@ if __name__ == '__main__':
     o.add_option('-n', '--limit', dest='limit', action='store',
                  default=0, help='maximum number of stations.')
     o.add_option('-r', '--random', dest='random', action='store_true',
-                 default=False, help='sort stations randomly.')
+                 default=False, help='sort stations randomly unless --sort is given.')
     o.add_option('-v', '--verbose', dest='verbose', action='store_true',
                  default=False, help='verbose output, useful for getting search right.')
     p = optparse.OptionGroup(o, 'Criteria')
@@ -218,6 +297,10 @@ if __name__ == '__main__':
     f.add_option('-t', '--type', dest='codec', action='store',
                  default='', help='"mpeg" for MP3, "aacp" for aacPlus.')
     o.add_option_group(f)
+    s = optparse.OptionGroup(o, 'Sorters', 'Manipulate the order of the returned list. The list can be sorted by number of listeners (l) and bitrate (b), it can be randomized (r) and it can be truncated (n), i.e. shortened to a specified amount of stations. Sorting is performed in written order, for example "ln20r" sorts the list by number of listeners, trunkates it to twenty stations and then randomizes it, giving the top twenty random stations matching the search. ^ is used to set sort order to ascending for l and b. The default sort order is reset to descending for each new sorter. Specifying sorters void the "-r" option.')
+    s.add_option('', '--sort', dest='sort_rules', action='store',
+                 default='', help='rules for manipulating the order of the list. "l" for number of listeners, "b" for bitrate, "r" to randomize order, "n<integer>" to truncate list.')
+    o.add_option_group(s)
     
     (options, args) = o.parse_args()
 
@@ -227,6 +310,7 @@ if __name__ == '__main__':
     p_genre = options.genre
     p_station = options.station
     p_song = options.song
+    p_sort_rules = options.sort_rules
     p_limit = _int_param(options.limit)
     p_bitrate = _expression_param(options.bitrate)
     p_listeners = _expression_param(options.listeners)
@@ -236,6 +320,10 @@ if __name__ == '__main__':
         if options.codec.strip('"') not in ('mpeg', 'aacp'):
             o.error('CODEC must be "mpeg", "aacp" or none')
         p_mime_type = 'audio/' + options.codec.strip('"')
+
+    sorters, sorters_description = _generate_list_sorters(p_sort_rules)
+    if sorters:
+        p_random = False #Start with sorted list when using sorters
 
     if p_verbose:
         # Print information about query to help debug
@@ -254,21 +342,27 @@ if __name__ == '__main__':
             listeners_str = options.listeners
         print 'Listeners: %s' % listeners_str
         print '     Type: %s' % options.codec
+        order_str = 'by no listeners'
+        if p_random:
+            order_str = 'random'
+        if p_sort_rules:
+            order_str = 'by sorters'
+        print '    Order: %s' % order_str
+        print '   Manips: %s' % (' | '.join(sorters_description))
         limit_str = ''
         if p_limit > 0:
             limit_str = str(p_limit)
         print '    Limit: %s' % limit_str
-        order_str = 'by no listeners'
-        if p_random:
-            order_str = 'random'
-        print '    Order: %s' % order_str
         print ''
 
     try:
-        results = search(p_keywords, p_station, p_genre, p_song, p_bitrate, p_listeners, p_mime_type, p_limit, p_random)
+        results = search(p_keywords, p_station, p_genre, p_song, p_bitrate, p_listeners, p_mime_type, p_limit, p_random, sorters)
+            
         print '\n'.join(_station_text(el, p_verbose) for el in results)
         if p_verbose:
             print '%s station(s) found.' % len(results)
+        if not results:
+            _fail_exit(4, 'no station found\n')
     except urllib2.URLError, e:
         _fail_exit(1, 'network error: %s' % e)
     except Exception, e:

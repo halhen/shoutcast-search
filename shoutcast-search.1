@@ -62,15 +62,37 @@ Filter stations based on the codec required. Available options are "mpeg" for MP
 In addition to CRITERIA, you can provide KEYWORDS when you don't care where a word or phrase appear. KEYWORDS are matched against station names, genres and current songs. Separate KEYWORDS with spaces, enclose multiple word KEYWORDS in quotes, for example:
 
     $ shoutcast-search "Depeche Mode" somebody
+.SH SORTERS
+Sorting and pruning of the list is performed by specifying the --sort option. Specifying sorters void the "-r" option.
+
+Sorting is performed in written order, for example "ln20r" sorts the retrieved list by number of listeners, trunkates it to twenty stations and then randomizes it, giving the top twenty random stations matching the search.
+
+^ is used to set sort order to ascending for l and b. The default sort order is reset to descending for each new sorter. 
+
+.TP
+^ reverses order for the next variable. Sort order is reset to descending for each variable
+.TP
+b sorts by bitrate
+.TP
+l sorts by number of listeners
+.TP
+r randomizes list.
+.TP
+n truncates the list with the number of elements that is given, for example n10.
 .SH EXAMPLES
 Normal output is one URL per line pointing to a matching shoutcast stream. This can be used to start music players with the applicable stations or to create playlists. For example, start mplayer with the most popular stream currently playing a Depeche Mode song:
 
   $ shoutcast-search -n 1 -s "Depeche Mode" | xargs mplayer
 
-.B shoutcast-search
-can also be used in --verbose mode. This is useful to verify that you have provided the parameters correctly. Verbose mode also prints more information for each station, needed for manual searches. For example, searching for two random stations playing ambient music:
+Examples of SORTERS are
+.TP
+"^b" sorts by bitrate ascending.
+.TP
+"ln10r": sort by bitrate descending, truncate the list to ten stations, randomize order. This is appropriate if you want to pick a random popular station.
+.SH VERBOSE MODE
+shoutcast-search can also be used in --verbose mode. This is useful to verify that you have provided the parameters correctly. Verbose mode also prints more information for each station, needed for manual searches. For example, searching for two random stations playing ambient music:
 
-   $ shoutcast-search --verbose --limit=2 --random --genre=ambient
+   $ shoutcast-search -v --limit=2 --random --genre=ambient
 
 prints
 
@@ -83,8 +105,10 @@ prints
      Bitrate: 
    Listeners: 
         Type: 
-       Limit: 2
        Order: random
+      Manips:
+       Limit: 2
+
 
    Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
            http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
@@ -117,6 +141,9 @@ Argument error
 .TP
 .B 3
 Other error
+.TP
+.B 4
+No matching stations found
 .SH AUTHOR
 Written by Henrik Hallberg (halhen@k2h.se)
 .SH REPORTING BUGS
