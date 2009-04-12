@@ -32,31 +32,31 @@ shoutcast-search can also be run in verbose mode: `shoutcast-search -v`. This is
 
 An example of verbose output:
 
-    $ shoutcast-search --verbose --sort=rn2l --genre=ambient
-    Search summary
-    ------------------------------
-    Keywords:
-      Genres: ambient
-     Playing:
-    Stations:
-     Bitrate:
-   Listeners:
-        Type:
-       Order: by sorters
-      Sorter: random order | top 2 | listeners desc
-       Limit: 2
+     $ shoutcast-search --verbose --sort=rn2l --genre=ambient
+     Search summary
+     ------------------------------
+     Keywords:
+       Genres: ambient
+      Playing:
+     Stations:
+      Bitrate:
+    Listeners:
+         Type:
+        Order: by sorters
+       Sorter: random order | top 2 | listeners desc
+        Limit: 2
      	      
-   Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
-           http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
-           Ambient, 139 listeners
-           Now playing: HIA and Biosphere - Midpoint
-     
-   X-Pulse 24/7 Ambient Radio [48kbps audio/mpeg]
-           http://yp.shoutcast.com/sbin/tunein-station.pls?id=255046
-           Ambient, 0 listeners
-           Now playing: Zero One - Affirmative
-   
-   2 station(s) found.
+    Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
+            http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
+            Ambient, 139 listeners
+            Now playing: HIA and Biosphere - Midpoint
+      
+    X-Pulse 24/7 Ambient Radio [48kbps audio/mpeg]
+            http://yp.shoutcast.com/sbin/tunein-station.pls?id=255046
+            Ambient, 0 listeners
+            Now playing: Zero One - Affirmative
+    
+    2 station(s) found.
 
 The information for each station is listed below. Copy/paste or type the URL into your shoutcast-enabled music player to play the stream.
 
