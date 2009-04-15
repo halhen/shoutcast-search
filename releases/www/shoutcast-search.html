@@ -43,31 +43,32 @@ In verbose mode, the stations are listed with more information. This allows you 
 </ul>
 <p>
 An example of verbose output:</p>
-<pre><code> $ shoutcast-search --verbose --sort=rn2l --genre=ambient
- Search summary
- ------------------------------
- Keywords:
-   Genres: ambient
-  Playing:
- Stations:
-  Bitrate:
-Listeners:
-     Type:
-    Order: by sorters
-   Sorter: random order | top 2 | listeners desc
-    Limit: 2
+<pre><code>  $ shoutcast-search --verbose --sort=rn2l --genre=ambient
+  Search summary
+  ------------------------------
+  Keywords:
+    Genres: ambient
+   Playing:
+  Stations:
+   Bitrate:
+ Listeners:
+      Type:
+     Order: by sorters
+    Sorter: random order | top 2 | listeners desc
+     Limit: 2
+    Format: %s [%bkbps %t]\\n\\t%u\\n\\t%g, %l listeners\\n\\tNow playing: %p\\n
   	      
-Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
-        http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
-        Ambient, 139 listeners
-        Now playing: HIA and Biosphere - Midpoint
-  
-X-Pulse 24/7 Ambient Radio [48kbps audio/mpeg]
-        http://yp.shoutcast.com/sbin/tunein-station.pls?id=255046
-        Ambient, 0 listeners
-        Now playing: Zero One - Affirmative
-
-2 station(s) found.</code></pre>
+ Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
+         http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
+         Ambient, 139 listeners
+         Now playing: HIA and Biosphere - Midpoint
+   
+ X-Pulse 24/7 Ambient Radio [48kbps audio/mpeg]
+         http://yp.shoutcast.com/sbin/tunein-station.pls?id=255046
+         Ambient, 0 listeners
+         Now playing: Zero One - Affirmative
+ 
+ 2 station(s) found.</code></pre>
 <p>
 The information for each station is listed below. Copy/paste or type the URL into your shoutcast-enabled music player to play the stream.</p>
 <pre><code>       &lt;station name&gt; [&lt;bitrate&gt; &lt;MIME type&gt;]
@@ -119,6 +120,24 @@ The available sorting parameters are:</p>
 <li><code>r</code> randomizes list.</li>
 <li><code>n</code> truncates the list with the number of elements that is given, for example <code>n10</code>.</li>
 </ul>
+<h2>Format</h2>
+<p>
+You can specify how shoutcast-search prints the information for each matching stations using the <code>-f</code> option. The format is specified using a combination of free text and codes that are replaced with the applicable station information. For example, --format=<code>&quot;Station name: %s&quot;</code> prints <code>Station Name: &lt;name&gt;</code> for each station found. <code>%u</code> is the default format.</p>
+<p>
+The following codes are available:
+<ul>
+<li>%u - URL to the stream</li>
+<li>%g - stations genre</li>
+<li>%p - currently played song</li>
+<li>%s - station name</li>
+<li>%b - bitrate in kbps</li>
+<li>%l - number of listeners</li>
+<li>%t - MIME string describing codec</li>
+<li>%% - percent sign where the following character is one of the above</li>
+<li>\n - newline</li>
+<li>\t - tab</li>
+</ul>
+</p>
 <h2>Options</h2>
 <p>
 By default, shoutcast-search returns the found stations ordered by number of listeners. You can tell shoutcast-search to randomize the order by providing the <code>-r</code> option. This option is not applicable if <code>--sort</code> is specified.</p>
@@ -140,7 +159,12 @@ shoutcast-search first matches the stations against the criteria; all criteria m
 <ul>
 <li>Get the five most listened to rock radio stations sorted by bitrate:</li>
 </ul>
-<pre><code>$ shoutcast-search -g rock --sort=ln5b</code></pre>
+<pre><code>$ shoutcast-search -g rock --sort=ln5b
+</code></pre>
+<ul>
+<li>List the number of listeners and station name of the 50 most listened to stations:</li>
+</ul>
+<pre><code>$ shoutcast-search -n 50 -f &quot;%l %s&quot;</code></pre>
 <h2>Automation</h2>
 <p>
 I've have a function in my .bashrc to quickly search and start a station with <a href="http://en.wikipedia.org/wiki/Mpg123">mpg123</a>:
