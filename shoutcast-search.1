@@ -19,7 +19,7 @@ Show program's version number and exit.
 Show program's help message and exit.
 .TP
 .B --list-genres
-List available genres and exit.
+List available genres from shoutcast.com and exit.
 .TP
 .B -n LIMIT, --limit=LIMIT
 Set maximum number of stations to be listed.
@@ -29,6 +29,34 @@ Sort stations randomly instead of by number of listeners
 .TP
 .B -v, --verbose
 Verbose output, useful for getting search right.
+
+.SH FORMAT
+Specifies what information that should be printed about the matching stations. You can specify mix free text with information about the station. To inserf information about a station, use the codes below.
+
+.B -f FORMAT, --format=FORMAT
+String describing the format for the found stations.
+
+Codes
+.TP
+%u - URL to the stream
+.TP
+%g - stations genre
+.TP
+%p - currently played song
+.TP
+%s - station name
+.TP
+%b - bitrate in kbps
+.TP
+%l - number of listeners
+.TP
+%t - MIME string describing codec
+.TP
+%% - percent sign where the following character is one of the above
+.TP
+\\n - newline
+.TP
+\\t - tab
 .SH CRITERIA
 Used to create detailed searches, for example to search for stations with specific names or artists being played. You can supply multiple CRITERIA of the same type, for example
 
@@ -83,6 +111,10 @@ n truncates the list with the number of elements that is given, for example n10.
 Normal output is one URL per line pointing to a matching shoutcast stream. This can be used to start music players with the applicable stations or to create playlists. For example, start mplayer with the most popular stream currently playing a Depeche Mode song:
 
   $ shoutcast-search -n 1 -s "Depeche Mode" | xargs mplayer
+
+The number of listeners and station name of the 50 most listened to stations:
+
+  $ shoutcast-search -n 50 -f "%l %s"
 
 Examples of SORTERS:
 .TP

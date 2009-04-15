@@ -84,7 +84,7 @@ def get_genres():
 
 def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda(x): True, listeners_fn = lambda(x): True, mime_type = '', limit = 0, randomize = False, sorters = []):
     '''
-    Search shoutcast.com for streams with given criteria. See http://forums.winamp.com/showthread.php?threadid=295638 for details and rules. Raises urllib2.URLError if network communication fails.
+   Search shoutcast.com for streams with given criteria. See http://forums.winamp.com/showthread.php?threadid=295638 for details and rules. Raises urllib2.URLError if network communication fails.
       search - List of free-form keywords. Searches in station names, genres and songs.
       station - List of phrases to find in station names.
       genre - List of phrases to find in genres.

@@ -52,12 +52,16 @@ For more information on usage see the man page shoutcast-search(1) or:
     
 Changes
 -------
+0.3 (2009-04-15):
+    --list-genres option
+    -f FORMAT, --format=FORMAT option
+    created shoutcast_search.py module
+    
 0.2 (2009-04-12):
-     --sorted option.
+     --sorted option
      exit code 4 when no stations found
      documentation.md (in markdown format)
-     minor corrections in e.g. man page
-     
+     minor corrections in e.g. man page 
 
 0.1 (2009-04-08):
      First release. Packaged as application, even though the source code

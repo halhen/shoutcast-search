@@ -45,6 +45,7 @@ An example of verbose output:
         Order: by sorters
        Sorter: random order | top 2 | listeners desc
         Limit: 2
+       Format: %s [%bkbps %t]\\n\\t%u\\n\\t%g, %l listeners\\n\\tNow playing: %p\\n
      	      
     Bluemars - Music for the Space Traveler [128kbps audio/mpeg]
             http://yp.shoutcast.com/sbin/tunein-station.pls?id=619161
@@ -108,6 +109,21 @@ The available sorting parameters are:
 * `r` randomizes list.
 * `n` truncates the list with the number of elements that is given, for example `n10`.
 
+## Format
+You can specify how shoutcast-search prints the information for each matching stations using the `-f` option. The format is specified using a combination of free text and codes that are replaced with the applicable station information. For example, --format=`"Station name: %s"` prints `Station Name: <name>` for each station found. `%u` is the default format.
+
+The following codes are available:
+* %u - URL to the stream
+* %g - stations genre
+* %p - currently played song
+* %s - station name
+* %b - bitrate in kbps
+* %l - number of listeners
+* %t - MIME string describing codec
+* %% - percent sign where the following character is one of the above
+* \n - newline
+* \t - tab
+
 ## Options
 By default, shoutcast-search returns the found stations ordered by number of listeners. You can tell shoutcast-search to randomize the order by providing the `-r` option. This option is not applicable if `--sort` is specified.
 
@@ -129,6 +145,10 @@ shoutcast-search first matches the stations against the criteria; all criteria m
 * Get the five most listened to rock radio stations sorted by bitrate:
 
 	$ shoutcast-search -g rock --sort=ln5b
+	
+* List the number of listeners and station name of the 50 most listened to stations:
+
+	$ shoutcast-search -n 50 -f "%l %s"
 
 ## Automation
 I've have a function in my .bashrc to quickly search and start a station with [mpg123](http://en.wikipedia.org/wiki/Mpg123):

@@ -22,13 +22,13 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
+import re
 import sys
 import urllib2
 import random
 import optparse
 
 import shoutcast_search.shoutcast_search as scs
-
 
 description = 'Search shoutcast.com for radio stations (not for commercial use, see http://forums.winamp.com/showthread.php?threadid=295638). Use criteria to search for station names, genres or current songs, and filters to specify details. Keywords are used to search freely among station names, genres and current songs. With no criteria or keywords, %prog returns the current Top500 list. Stations can be sorted in different ways using sorters. Example: \'%prog -n 10 -g Rock -p "Depeche Mode" -b "=128"\' shows the top ten Rock 128kbps stations currently playing Depeche Mode.'
     
@@ -257,7 +257,7 @@ if __name__ == '__main__':
             
         print '\n'.join(_station_text(el, p_format) for el in results)
         if p_verbose:
-            print '%s station(s) found.' % len(results)
+            print '\n%s station(s) found.' % len(results)
         if not results:
             _fail_exit(4, 'no station found\n')
     except urllib2.URLError, e:

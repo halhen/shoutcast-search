@@ -6,7 +6,7 @@ fi
 APPNAME="shoutcast-search"
 RELEASENAME=$APPNAME-$1
 
-mkdir $RELEASENAME
+mkdir -p $RELEASENAME/shoutcast_search
 
 cat LICENSE | sed s/CURVERSION/$1/g > $RELEASENAME/LICENSE
 cat README | sed s/CURVERSION/$1/g > $RELEASENAME/README
