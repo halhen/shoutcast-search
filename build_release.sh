@@ -13,6 +13,9 @@ cat README | sed s/CURVERSION/$1/g > $RELEASENAME/README
 cat config.mk | sed s/CURVERSION/$1/g > $RELEASENAME/config.mk
 cat Makefile | sed s/CURVERSION/$1/g > $RELEASENAME/Makefile
 cat shoutcast-search | sed s/CURVERSION/$1/g > $RELEASENAME/shoutcast-search
+cat setup.py | sed s/CURVERSION/$1/g > $RELEASENAME/setup.py
+cat shoutcast_search/shoutcast_search.py | sed s/CURVERSION/$1/g > $RELEASENAME/shoutcast_search/shoutcast_search.py
+cat shoutcast_search/__init__.py | sed s/CURVERSION/$1/g > $RELEASENAME/shoutcast_search/__init__.py
 cat shoutcast-search.1 | sed s/CURVERSION/$1/g > $RELEASENAME/shoutcast-search.1
 cat documentation.md | sed s/CURVERSION/$1/g > $RELEASENAME/documentation.md
 

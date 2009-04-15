@@ -14,11 +14,15 @@ cd pkg/pypi
 
 mkdir -p $PKGNAME/$LIBNAME
 cat README | sed s/CURVERSION/$1/g > $PKGNAME/README
-cat setup.py | sed s/CURVERSION/$1/g > $PKGNAME/setup.py
-cat $LIBNAME/__init__.py | sed s/CURVERSION/$1/g > $PKGNAME/$LIBNAME/__init__.py
-cat ../../shoutcast-search-$1/shoutcast_search.py | sed s/CURVERSION/$1/g > $PKGNAME/$LIBNAME/shoutcast_search.py
+cat ../../setup.py | sed s/CURVERSION/$1/g > $PKGNAME/setup.py
+cat ../../$LIBNAME/__init__.py | sed s/CURVERSION/$1/g > $PKGNAME/$LIBNAME/__init__.py
+cat ../../$LIBNAME/shoutcast_search.py | sed s/CURVERSION/$1/g > $PKGNAME/$LIBNAME/shoutcast_search.py
 
+cd $PKGNAME
+python setup.py sdist
+cp dist/$LIBNAME-$1.tar.gz ../../../releases/pypi
+cd ..
 
-#rm -r $PKGNAME
+rm -r $PKGNAME
 
 cd ../../
