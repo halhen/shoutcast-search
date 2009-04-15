@@ -8,7 +8,7 @@ install:
 	@cp -f shoutcast-search ${DESTDIR}${PREFIX}/bin
 	@chmod 755 ${DESTDIR}${PREFIX}/bin/shoutcast-search
 	@echo installing shoutcast_search Python library
-	@python setup.py install
+	@python setup.py install --prefix=${PREFIX} --root=${DESTDIR}
 	@echo installing manual page to ${DESTDIR}${MANPREFIX}/man1
 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
 	@sed "s/CURVERSION/${VERSION}/g" < shoutcast-search.1 > ${DESTDIR}${MANPREFIX}/man1/shoutcast-search.1
