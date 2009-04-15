@@ -52,6 +52,9 @@ For more information on usage see the man page shoutcast-search(1) or:
     
 Changes
 -------
+0.3.1 (2009-04-15):
+    minor adjustmets in setup.py to make PyPI accept package
+
 0.3 (2009-04-15):
     --list-genres option
     -f FORMAT, --format=FORMAT option

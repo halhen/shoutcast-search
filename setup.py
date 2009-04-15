@@ -15,7 +15,5 @@ setup(
         'Intended Audience :: Developers',
         'License :: OSI Approved :: GNU General Public License (GPL)',
         'Programming Language :: Python',
-        'Multimedia :: Sound/Audio',
-        'Utilities'
         ],
     )
