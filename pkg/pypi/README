@@ -1,0 +1,36 @@
+shoutcast_search CURVERSION
+
+DESCRIPTION
+-----------
+
+This Python module contains functions for searching the shoutcast.com web radio stations. It was originally written to support shoutcast-search, a command line application for searching shoutcast.com. See http://code.k2h.se for more details about the application.
+
+The module uses a web service made available by shoutcast.com, see http://forums.winamp.com/showthread.php?threadid=295638 for details and information about accepted usage. The author is not liable for any violations of the service.
+
+INSTALLATION
+------------
+
+    $ easy_install shoutcast_search
+
+SOURCE CODE
+-----------
+
+You can find the latest version of shoutcast_search.py and shoutcast-search at http://github.com/halhen/shoutcast-search/tree/master.
+
+LICENSE
+-------
+    Copyright (c) 2009 by Henrik Hallberg (halhen at k2h dot se)
+
+    This program is free software; you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation; either version 2 of the License, or
+    (at your option) any later version.
+
+    This program is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License along
+    with this program; if not, write to the Free Software Foundation, Inc.,
+    51 Franklin Street, Fifth Floor, Boston, MA 02110-1301 USA.
