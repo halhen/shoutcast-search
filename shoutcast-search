@@ -74,6 +74,14 @@ def url_by_id(index):
     '''
     return 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=%s' % index
 
+def get_genres():
+    '''
+    Returns a list of genres (listed by the shoutcast web service).
+    Raises urllib2.URLError if network communication fails
+    '''
+    content = urllib2.urlopen('http://yp.shoutcast.com/sbin/newxml.phtml').read()
+    return list(re.compile('<genre name="(.*?)"').findall(content))
+
 def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda(x): True, listeners_fn = lambda(x): True, mime_type = '', limit = 0, randomize = False, sorters = []):
     '''
     Search shoutcast.com for streams with given criteria. See http://forums.winamp.com/showthread.php?threadid=295638 for details and rules. Raises urllib2.URLError if network communication fails.
@@ -158,6 +166,7 @@ if __name__ == '__main__':
 
     description = 'Search shoutcast.com for radio stations (not for commercial use, see http://forums.winamp.com/showthread.php?threadid=295638). Use criteria to search for station names, genres or current songs, and filters to specify details. Keywords are used to search freely among station names, genres and current songs. With no criteria or keywords, %prog returns the current Top500 list. Stations can be sorted in different ways using sorters. Example: \'%prog -n 10 -g Rock -p "Depeche Mode" -b "=128"\' shows the top ten Rock 128kbps stations currently playing Depeche Mode.'
     import optparse
+    import sys
     
     def _station_text(station_info, verbose = False):
         url = url_by_id(station_info['id'])
@@ -176,7 +185,6 @@ if __name__ == '__main__':
         return resstr
 
     def _fail_exit(code, msg):
-        import sys
         sys.stderr.write("%s: %s\n" % (sys.argv[0], msg))
         sys.exit(code)
 
@@ -275,6 +283,8 @@ if __name__ == '__main__':
     o = optparse.OptionParser(usage = "%prog [options] [keywords] - shoutcast search",
                               version="%prog CURVERSION",
                               description = description)
+    o.add_option('', '--list-genres', dest='do_list_genres', action='store_true',
+                 default=False, help='list available genres and exit')
     o.add_option('-n', '--limit', dest='limit', action='store',
                  default=0, help='maximum number of stations.')
     o.add_option('-r', '--random', dest='random', action='store_true',
@@ -304,58 +314,66 @@ if __name__ == '__main__':
     
     (options, args) = o.parse_args()
 
-    p_keywords = args
-    p_verbose = options.verbose
-    p_random = options.random
-    p_genre = options.genre
-    p_station = options.station
-    p_song = options.song
-    p_sort_rules = options.sort_rules
-    p_limit = _int_param(options.limit)
-    p_bitrate = _expression_param(options.bitrate)
-    p_listeners = _expression_param(options.listeners)
-
-    p_mime_type = ''
-    if options.codec:
-        if options.codec.strip('"') not in ('mpeg', 'aacp'):
-            o.error('CODEC must be "mpeg", "aacp" or none')
-        p_mime_type = 'audio/' + options.codec.strip('"')
-
-    sorters, sorters_description = _generate_list_sorters(p_sort_rules)
-    if sorters:
-        p_random = False #Start with sorted list when using sorters
-
-    if p_verbose:
-        # Print information about query to help debug
-        print 'Search summary'
-        print '-' * 30
-        print ' Keywords: %s' % ', '.join(p_keywords)
-        print '   Genres: %s' % ', '.join(p_genre)
-        print '  Playing: %s' % ', '.join(p_song)
-        print ' Stations: %s' % ', '.join(p_station)
-        bitrate_str = ''
-        if options.bitrate:
-            bitrate_str = options.bitrate
-        print '  Bitrate: %s' % bitrate_str
-        listeners_str = ''
-        if options.listeners:
-            listeners_str = options.listeners
-        print 'Listeners: %s' % listeners_str
-        print '     Type: %s' % options.codec
-        order_str = 'by no listeners'
-        if p_random:
-            order_str = 'random'
-        if p_sort_rules:
-            order_str = 'by sorters'
-        print '    Order: %s' % order_str
-        print '   Sorter: %s' % (' | '.join(sorters_description))
-        limit_str = ''
-        if p_limit > 0:
-            limit_str = str(p_limit)
-        print '    Limit: %s' % limit_str
-        print ''
-
     try:
+        if options.do_list_genres:
+            genres = get_genres()
+            print '\n'.join(genres)
+            if genres:
+                sys.exit(0)
+            else:
+                sys.exit(4)
+
+        p_keywords = args
+        p_verbose = options.verbose
+        p_random = options.random
+        p_genre = options.genre
+        p_station = options.station
+        p_song = options.song
+        p_sort_rules = options.sort_rules
+        p_limit = _int_param(options.limit)
+        p_bitrate = _expression_param(options.bitrate)
+        p_listeners = _expression_param(options.listeners)
+
+        p_mime_type = ''
+        if options.codec:
+            if options.codec.strip('"') not in ('mpeg', 'aacp'):
+                o.error('CODEC must be "mpeg", "aacp" or none')
+            p_mime_type = 'audio/' + options.codec.strip('"')
+
+        sorters, sorters_description = _generate_list_sorters(p_sort_rules)
+        if sorters:
+            p_random = False #Start with sorted list when using sorters
+
+        if p_verbose:
+            # Print information about query to help debug
+            print 'Search summary'
+            print '-' * 30
+            print ' Keywords: %s' % ', '.join(p_keywords)
+            print '   Genres: %s' % ', '.join(p_genre)
+            print '  Playing: %s' % ', '.join(p_song)
+            print ' Stations: %s' % ', '.join(p_station)
+            bitrate_str = ''
+            if options.bitrate:
+                bitrate_str = options.bitrate
+            print '  Bitrate: %s' % bitrate_str
+            listeners_str = ''
+            if options.listeners:
+                listeners_str = options.listeners
+            print 'Listeners: %s' % listeners_str
+            print '     Type: %s' % options.codec
+            order_str = 'by no listeners'
+            if p_random:
+                order_str = 'random'
+            if p_sort_rules:
+                order_str = 'by sorters'
+            print '    Order: %s' % order_str
+            print '   Sorter: %s' % (' | '.join(sorters_description))
+            limit_str = ''
+            if p_limit > 0:
+                limit_str = str(p_limit)
+            print '    Limit: %s' % limit_str
+            print ''
+
         results = search(p_keywords, p_station, p_genre, p_song, p_bitrate, p_listeners, p_mime_type, p_limit, p_random, sorters)
             
         print '\n'.join(_station_text(el, p_verbose) for el in results)
