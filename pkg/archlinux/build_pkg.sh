@@ -21,6 +21,5 @@ cat pkg/archlinux/PKGBUILD-template | sed s/CURVERSION/$1/g | sed s/MD5SUM/$MD5/
 cd releases/archlinux/
 
 makepkg -f --source
-rm PKGBUILD
 
 cd ..
