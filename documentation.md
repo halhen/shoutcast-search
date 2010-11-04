@@ -2,9 +2,7 @@
 
 shoutcast-search searches the [shoutcast.com](http://www.shoutcast.com) radio stations from your command line. It is developed and tested on Linux, but since it is written in Python it may run, or at least should be easily portable, to other operating systems.
 
-* [man page](http://www.k2h.se/code/shoutcast-search.man.txt)
-* [latest release](http://www.k2h.se/code/dl/shoutcast-search-latest.tar.gz)
-* [source repository](http://github.com/halhen/shoutcast-search/tree/master)
+* [source repository](http://github.com/halhen/shoutcast-search/)
 
 Distribution specific links:
 
@@ -179,6 +177,6 @@ Check your audio players documentation on how to play shoutcast streams. Here fo
 	$ killall mpg123; shoutcast-search -t mpeg [...] | xargs mpg123 -q -@ &
 
 ## More information
-For a complete reference, see the [man-page](http://www.k2h.se/code/shoutcast-search.man.txt) (`man shoutcast-search`).
+For a complete reference, see the man-page (`man shoutcast-search`).
 
 Written by Henrik Hallberg (<halhen@k2h.se>). Please send me an e-mail if you find bugs, have ideas for new features or just to let me know you use the application. I'd be happy to hear from you.

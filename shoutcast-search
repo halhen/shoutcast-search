@@ -3,8 +3,7 @@
 #   scs - shoutcast search; search among station on shoutcast.com
 #   Use as application to e.g. start random stream on command line.
 #
-#   Copyright (c) 2009 by Henrik Hallberg (halhen@k2h.se)
-#   http://code.k2h.se
+#   Copyright (c) 2009-2010 by the Authors.
 #   Please report bugs or feature requests by e-mail. Also, I'd be happy
 #   to hear from you if you enjoy this software.
 #
@@ -149,7 +148,7 @@ def _generate_list_sorters(pattern = 'l'):
 
 if __name__ == '__main__':
     o = optparse.OptionParser(usage = "%prog [options] [keywords] - shoutcast search",
-                              version="%prog CURVERSION",
+                              version="%prog 0.4",
                               description = description)
     o.add_option('', '--list-genres', dest='do_list_genres', action='store_true',
                  default=False, help='list available genres and exit')

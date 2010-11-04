@@ -2,8 +2,7 @@
 #
 #   shoutcast_search.py - a library to search shoutcast.com
 #
-#   Copyright (c) 2009 by Henrik Hallberg (halhen@k2h.se)
-#   http://code.k2h.se
+#   Copyright (c) 2009-2010 by the Authors.
 #   Please report bugs or feature requests by e-mail. Also, I'd be happy
 #   to hear from you if you enjoy this software.
 #

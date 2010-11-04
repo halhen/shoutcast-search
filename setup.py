@@ -3,8 +3,8 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'shoutcast_search',
-    version = 'CURVERSION',
-    url = 'http://code.k2h.se',
+    version = '0.4',
+    url = 'http://github.com/halhen/shoutcast-search',
     author = 'Henrik Hallberg',
     author_email = 'halhen@k2h.se',
     license = 'GPL',

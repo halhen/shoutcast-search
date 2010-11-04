@@ -11,7 +11,7 @@ install:
 	@python setup.py install --prefix=${PREFIX} --root=${DESTDIR}
 	@echo installing manual page to ${DESTDIR}${MANPREFIX}/man1
 	@mkdir -p ${DESTDIR}${MANPREFIX}/man1
-	@sed "s/CURVERSION/${VERSION}/g" < shoutcast-search.1 > ${DESTDIR}${MANPREFIX}/man1/shoutcast-search.1
+	@cp -f shoutcast-search.1 ${DESTDIR}${MANPREFIX}/man1/shoutcast-search.1
 	@chmod 644 ${DESTDIR}${MANPREFIX}/man1/shoutcast-search.1
 
 uninstall:
