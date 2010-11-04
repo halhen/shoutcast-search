@@ -90,7 +90,7 @@ def _generate_list_sorters(pattern = 'l'):
     Default behaviour is 'l'
     '''
     def _create_sorter(field, descending):
-        return lambda list: sorted(list, lambda a, b: cmp(int(a[field]), int(b[field])), reverse = descending)
+        return lambda list: sorted(list, key=lambda a: int(a[field]), reverse = descending)
 
     def _filter_description(fieldname, descending):
         descending_text = 'desc'
