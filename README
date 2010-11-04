@@ -1,4 +1,4 @@
-shoutcast-search 0.4
+shoutcast-search 0.4.1
 ========================
 shoutcast-search searches shoutcast.com for radio stations based on
 criteria given on the command line. The application can for example
@@ -49,7 +49,7 @@ For more information on usage see the man page shoutcast-search(1) or:
     
 Changes
 -------
-0.4 (2010-11-04):
+0.4.1 (2010-11-04):
     migration from python2 to python 3
 
 0.3.1 (2009-04-15):

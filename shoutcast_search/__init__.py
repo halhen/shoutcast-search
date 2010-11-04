@@ -18,7 +18,7 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-__version__ = '0.4'
+__version__ = '0.4.1'
 
 from . import shoutcast_search
 

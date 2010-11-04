@@ -3,7 +3,7 @@ from setuptools import setup, find_packages
 
 setup(
     name = 'shoutcast_search',
-    version = '0.4',
+    version = '0.4.1',
     url = 'http://github.com/halhen/shoutcast-search',
     author = 'Henrik Hallberg',
     author_email = 'halhen@k2h.se',
