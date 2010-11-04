@@ -24,7 +24,7 @@
 
 import re
 import sys
-import urllib2
+import urllib.error
 import random
 import optparse
 
@@ -52,25 +52,25 @@ def _station_text(station_info, format):
     return resstr
 
 def _fail_exit(code, msg):
-    sys.stderr.write("%s: %s\n" % (sys.argv[0], msg))
+    sys.stderr.write("{0}: {1}\n".format(sys.argv[0], msg))
     sys.exit(code)
 
 def _expression_param(value):
     if not value:
-        return lambda(x):True
+        return lambda x:True
     if not re.compile('^[=><]?\d+$').match(value):
-        o.error('invalid expression: %s' % value)
+        o.error('invalid expression: {0}'.format(value))
             
     if value[0] in ('><'):
-        return lambda(x): eval('%s%s' % (x, value))
+        return lambda x: eval('{0}{1}'.format(x, value))
     else:
-        return lambda(x): eval('%s==%s' % (x, value.strip('=')))
+        return lambda x: eval('{0}=={1}'.format(x, value.strip('=')))
 
 def _int_param(value):
     try:
         return int(value)
     except:
-        o.error('invalid integer: %s' % value)
+        o.error('invalid integer: {0}'.format(value))
 
 def _generate_list_sorters(pattern = 'l'):
     '''
@@ -97,7 +97,7 @@ def _generate_list_sorters(pattern = 'l'):
         descending_text = 'desc'
         if not descending:
             descending_text = 'asc'
-        return '%s %s' % (fieldname, descending_text)
+        return '{0} {1}'.format(fieldname, descending_text)
         
     def _random(list):
         random.shuffle(list)
@@ -134,12 +134,12 @@ def _generate_list_sorters(pattern = 'l'):
             index -= 1
                     
             if not number:
-                o.error('missing number for sorter n in "%s"' % pattern)
+                o.error('missing number for sorter n in "{0}"'.format(pattern))
             value = int(number)
             sorters.append(lambda list: list[:value])
-            sorters_description.append('top %s' % value)
+            sorters_description.append('top {0}'.format(value))
         else:
-            o.error('invalid sorter: %s' % char)
+            o.error('invalid sorter: {0}'.format(char))
         
         if char != '^':
             sort_descending = True # Reset sort order
@@ -189,7 +189,7 @@ if __name__ == '__main__':
     try:
         if options.do_list_genres:
             genres = scs.get_genres()
-            print '\n'.join(genres)
+            print('\n'.join(genres))
             if genres:
                 sys.exit(0)
             else:
@@ -224,43 +224,43 @@ if __name__ == '__main__':
 
         if p_verbose:
             # Print information about query to help debug
-            print 'Search summary'
-            print '-' * 30
-            print ' Keywords: %s' % ', '.join(p_keywords)
-            print '   Genres: %s' % ', '.join(p_genre)
-            print '  Playing: %s' % ', '.join(p_song)
-            print ' Stations: %s' % ', '.join(p_station)
+            print('Search summary')
+            print('-' * 30)
+            print(' Keywords: {0}'.format(', '.join(p_keywords)))
+            print('   Genres: {0}'.format(', '.join(p_genre)))
+            print('  Playing: {0}'.format(', '.join(p_song)))
+            print(' Stations: {0}'.format(', '.join(p_station)))
             bitrate_str = ''
             if options.bitrate:
                 bitrate_str = options.bitrate
-            print '  Bitrate: %s' % bitrate_str
+            print('  Bitrate: {0}'.format(bitrate_str))
             listeners_str = ''
             if options.listeners:
                 listeners_str = options.listeners
-            print 'Listeners: %s' % listeners_str
-            print '     Type: %s' % options.codec
+            print('Listeners: {0}'.format(listeners_str))
+            print('     Type: {0}'.format(options.codec))
             order_str = 'by no listeners'
             if p_random:
                 order_str = 'random'
             if p_sort_rules:
                 order_str = 'by sorters'
-            print '    Order: %s' % order_str
-            print '   Sorter: %s' % (' | '.join(sorters_description))
+            print('    Order: {0}'.format(order_str))
+            print('   Sorter: {0}'.format(' | '.join(sorters_description)))
             limit_str = ''
             if p_limit > 0:
                 limit_str = str(p_limit)
-            print '    Limit: %s' % limit_str
-            print '   Format: %s' % p_format
-            print ''
+            print('    Limit: {0}'.format(limit_str))
+            print('   Format: {0}'.format(p_format))
+            print('')
 
         results = scs.search(p_keywords, p_station, p_genre, p_song, p_bitrate, p_listeners, p_mime_type, p_limit, p_random, sorters)
             
-        print '\n'.join(_station_text(el, p_format) for el in results)
+        print('\n'.join(_station_text(el, p_format) for el in results))
         if p_verbose:
-            print '\n%s station(s) found.' % len(results)
+            print('\n{0:d} station(s) found.'.format(len(results)))
         if not results:
             _fail_exit(4, 'no station found\n')
-    except urllib2.URLError, e:
-        _fail_exit(1, 'network error: %s' % e)
-    except Exception, e:
-        _fail_exit(3, 'unknown error: %s' % e)
+    except urllib.error.URLError as e:
+        _fail_exit(1, 'network error: {0}'.format(e))
+    except Exception as e:
+        _fail_exit(3, 'unknown error: {0}'.format(e))

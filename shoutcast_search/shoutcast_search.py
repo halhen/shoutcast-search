@@ -21,11 +21,13 @@
 #   along with this program.  If not, see <http://www.gnu.org/licenses/>.
 #
 
-import urllib
-import urllib2
+import urllib.request, urllib.parse, urllib.error
 import re
 import random
-from htmlentitydefs import name2codepoint
+from html.entities import name2codepoint
+
+def _from_UTF_8(inbytes):
+    return str(inbytes, 'UTF-8')
 
 def _build_search_url(params):
     '''
@@ -33,7 +35,7 @@ def _build_search_url(params):
       params - See urllib.urlencode
     '''
     baseurl = 'http://yp.shoutcast.com/sbin/newxml.phtml?'
-    params_str = urllib.urlencode(params)
+    params_str = urllib.parse.urlencode(params)
     return baseurl + params_str
 
 def _decode_entities(s):
@@ -41,14 +43,14 @@ def _decode_entities(s):
     Return string with converted htmlentities, e.g. &auml;
       s - string to convert
     '''
-    return re.sub('&(%s);'% ('|'.join(name2codepoint)), lambda(m): chr(name2codepoint[m.group(1)]), s)
+    return re.sub('&(%s);'% ('|'.join(name2codepoint)), lambda m: chr(name2codepoint[m.group(1)]), s)
 
 def _retrieve_search_results(params):
     '''
     Perform search against shoutcast.com web service.
       params - See urllib.urlencode and http://forums.winamp.com/showthread.php?threadid=295638
     '''
-    content = urllib2.urlopen(_build_search_url(params)).read()
+    content = _from_UTF_8(urllib.request.urlopen(_build_search_url(params)).read())
 
     lp = re.compile('<station ')
     p = re.compile(' (.*?)=\"(.*?)\"')
@@ -72,17 +74,17 @@ def url_by_id(index):
     '''
     Returns the stations URL based on its ID
     '''
-    return 'http://yp.shoutcast.com/sbin/tunein-station.pls?id=%s' % index
+    return 'http://yp.shoutcast.com/sbin/tunein-station.pls?id={0}'.format(index)
 
 def get_genres():
     '''
     Returns a list of genres (listed by the shoutcast web service).
     Raises urllib2.URLError if network communication fails
     '''
-    content = urllib2.urlopen('http://yp.shoutcast.com/sbin/newxml.phtml').read()
+    content = _from_UTF_8(urllib.request.urlopen('http://yp.shoutcast.com/sbin/newxml.phtml').read())
     return list(re.compile('<genre name="(.*?)"').findall(content))
 
-def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda(x): True, listeners_fn = lambda(x): True, mime_type = '', limit = 0, randomize = False, sorters = []):
+def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda x: True, listeners_fn = lambda x: True, mime_type = '', limit = 0, randomize = False, sorters = []):
     '''
    Search shoutcast.com for streams with given criteria. See http://forums.winamp.com/showthread.php?threadid=295638 for details and rules. Raises urllib2.URLError if network communication fails.
       search - List of free-form keywords. Searches in station names, genres and songs.
@@ -140,13 +142,13 @@ def search(search = [], station = [], genre = [], song = [], bitrate_fn = lambda
     for s in song:
         results = [r for r in results if s.upper() in r['ct'].upper()]
     for k in keywords:
-        results = [r for r in results if k.upper() in ('%s %s %s' % (r['name'], r['genre'], r['ct'])).upper()]
+        results = [r for r in results if k.upper() in '{0} {1} {2}'.format(r['name'], r['genre'], r['ct']).upper()]
 
     if randomize:
         random.shuffle(results)
     else:
         # Sort by listener count
-        results.sort(lambda a, b: cmp(int(a['lc']), int(b['lc'])), reverse=True)
+        results.sort(key=lambda x: int(x['lc']), reverse=True)
 
     for m in sorters:
         results = m(results)

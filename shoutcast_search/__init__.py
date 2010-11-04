@@ -21,7 +21,7 @@
 
 __version__ = 'CURVERSION'
 
-import shoutcast_search
+from . import shoutcast_search
 
 def main():
     pass
