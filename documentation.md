@@ -71,11 +71,11 @@ You can perform free-text searches on three pieces of information
 * Song (`-p`)
 * Station (`-s`)
 
-The stations publish this information and they usually match pretty well. You can search for several criteria at once. All criteria must match for a station to be listed. For example searching `shoutcast-search -g synth -g pop -p "depeche mode"` lists all stations that have both the words "rock" *and* "pop" in their genre *and* is currently playing "depeche mode".
+The stations publish this information and they usually match pretty well. You can search for several criteria at once. All criteria must match for a station to be listed. For example searching `shoutcast-search -g synth -g pop -p "depeche mode"` lists all stations that have both the words "synth" *and* "pop" in their genre *and* is currently playing "depeche mode".
 
 If you are searching for multi-word phrases, they can be enclosed in quotes. Searching for `"depeche mode"` requires the full string, including the single space, to be present. `depeche mode` requires depeche *and* mode to appear, the order does however not matter. Criteria are case-insensive, `"Depeche MODE"` and `"depeche mode"` give the same results.
 
-You can also search for words or phrases without specifying which element to search. `shoutcast-search metallica` searches for stations with the word `metallica` in their genre, current song *or* station name. Any phrase that is not specified with an option, e.g. `-p`, will be used as a free text search. `shoutcast-search -g rock metallica` finds all stations with rock as their genre and metallica in any of genre, current song or station name. Use verbose mode to get your search right if you need to..
+You can also search for words or phrases without specifying which element to search. `shoutcast-search metallica` searches for stations with the word `metallica` in their genre, current song *or* station name. Any phrase that is not specified with an option will be used as a free text search. `shoutcast-search -g rock metallica` finds all stations with rock as their genre and metallica in any of genre, current song or station name. Use verbose mode to get your search right if you need to.
 
 If you don't provide any criteria, shoutcast-search returns the current Top 500 stations.
 
@@ -111,6 +111,7 @@ The available sorting parameters are:
 You can specify how shoutcast-search prints the information for each matching stations using the `-f` option. The format is specified using a combination of free text and codes that are replaced with the applicable station information. For example, --format=`"Station name: %s"` prints `Station Name: <name>` for each station found. `%u` is the default format.
 
 The following codes are available:
+
 * %u - URL to the stream
 * %g - stations genre
 * %p - currently played song
@@ -162,19 +163,17 @@ This function selects one random station out of the top ten most listened to pla
 Something similar can easily be put in a shell script and connected to a media button on the keyboard.
 
 ## Media players
-Check your audio players documentation on how to play shoutcast streams. Here follow a few examples.
+The URL returned points to a .pls-file. This is basically a playlist file pointing to the actual audio stream (of which there usually are several per station, supposedly for load balancing). Some music players accept the .pls files, while other need to be pointed to the stream itself.
 
-* VLC
+Below is a script to extract a random stream from the pls-file, and play it in MOC.
+    
+    ##!/bin/bash
+    URL=$(shoutcast-search [...] -n 1 | xargs curl -s | grep File | sort -R | head -n 1 | cut -d = -f 2)
+    if [ ! -z $URL ]; then
+        mocp -c -a $URL -p
+    fi
 
-	$ shoutcast-search [...] | xargs vlc --one-instance &
-
-* MPlayer
-
-	$ killall mplayer; shoutcast-search [...] | xargs mplayer &
-	
-* mpg123
-
-	$ killall mpg123; shoutcast-search -t mpeg [...] | xargs mpg123 -q -@ &
+Check your audio players documentation on how to play shoutcast streams.
 
 ## More information
 For a complete reference, see the man-page (`man shoutcast-search`).
