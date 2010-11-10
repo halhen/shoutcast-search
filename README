@@ -5,6 +5,8 @@ criteria given on the command line. The application can for example
 be used to automatically start a random radio station at startup or
 as an improved and handy search tool for radio stations.
 
+See documentation.md for a complete description.
+
 Example
 -------
 The following starts my day: launch vlc with a random station playing
