@@ -167,7 +167,7 @@ The URL returned points to a .pls-file. This is basically a playlist file pointi
 
 Below is a script to extract a random stream from the pls-file, and play it in MOC.
     
-    ##!/bin/bash
+    #!/bin/bash
     URL=$(shoutcast-search [...] -n 1 | xargs curl -s | grep File | sort -R | head -n 1 | cut -d = -f 2)
     if [ ! -z $URL ]; then
         mocp -c -a $URL -p
