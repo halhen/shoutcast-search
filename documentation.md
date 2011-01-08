@@ -1,3 +1,8 @@
+# IMPORTANT NOTICE
+
+AOL HAS INTRODUCED NEW LICENSE TERMS FOR THE SHOUTCAST SERVICE. SERVERAL OPEN SOURCE PROJECTS HAVE PULLED THEIR SHOUTCAST SUPPORT, WAITING FOR AOL TO INTRODUCE ACCEPTABLE TERMS. SHOUTCAST-SEARCH IS PUT ON HOLD UNTIL THESE ISSUES ARE RESOLVED. SEE [THE VIDEOLAN PRESS RELEASE](http://www.videolan.org/press/2010-1.html) FOR MORE INFORMATION.
+
+
 # shoutcast-search
 
 shoutcast-search searches the [shoutcast.com](http://www.shoutcast.com) radio stations from your command line. It is developed and tested on Linux, but since it is written in Python it may run, or at least should be easily portable, to other operating systems.
